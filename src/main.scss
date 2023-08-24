@@ -1,0 +1,58 @@
+@import "bootstrap";
+
+th {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.days_of_week {
+  font-size: 1.5vw;
+  text-align: center;
+  vertical-align: middle;
+  background: rgb(58,93,156);
+  color: white;
+}
+
+table {
+  table-layout: fixed;
+}
+
+tr td{
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+td .date, td .date_bill {
+  aspect-ratio: 1 / 0.2 ;
+  font-weight: bold;
+  font-size: 1.5vw;
+  color: rgb(58,93,167);
+  background: rgb(211,221,238);
+  padding-left: 3%;
+}
+
+td .date_bill {
+  color: black;
+}
+
+td .content {
+  aspect-ratio: 1 / 0.8 ;
+  padding-left: 3%;
+}
+
+.date_cell {
+  margin: 0;
+}
+
+.date_cells {
+  @extend .px-1, .text-truncate;
+  font-size: 1vw;
+}
+
+th:not(.date_cells), td:not(.date_cells){
+  border: 1px solid black;
+}
+
+td .date_end_amount {
+  background: rgb(242,242,242);
+}
