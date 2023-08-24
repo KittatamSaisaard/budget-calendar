@@ -56,3 +56,17 @@ th:not(.date_cells), td:not(.date_cells){
 td .date_end_amount {
   background: rgb(242,242,242);
 }
+
+.modal_list_title {
+  font-size: 1.5vw;
+  text-align: center;
+  vertical-align: middle;
+  background: rgb(211,221,238) !important;
+  color: rgb(58,93,167) !important;
+}
+
+.modal_list {
+  color: rgb(58,93,167);
+  background: rgb(211,221,238);
+  padding-left: 3%;
+}
