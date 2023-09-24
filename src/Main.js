@@ -6,6 +6,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './main.scss';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 function round2dec(value){
   return (Math.round(value * 100) / 100).toFixed(2);
@@ -88,10 +90,28 @@ function Day({date, handleShow}) {
 // }
 
 function Main() {
+  const [formValues, setFormValues] = useState([])
+  const [tempFormValues, setTempFormValues] = useState([])
+
   const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  let handleClose = () => {
+    alert(JSON.stringify(formValues));
+    setShow(false);
+  }
+
+  let handleCloseNotSave = () => {
+    let newFormValues = [...tempFormValues];
+    setFormValues(newFormValues);
+    alert(JSON.stringify(formValues));
+    setShow(false);
+  }
+  
+  const handleShow = () => {
+    let newFormValues = [...formValues];
+    setTempFormValues(newFormValues);
+    setShow(true);
+  }
 
   const dates_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
   let dates = [];
@@ -110,7 +130,21 @@ function Main() {
     dates = [];
   }
 
+  let handleChange = (i, e) => {
+    let newFormValues = [...formValues];
+    newFormValues[i][e.target.name] = e.target.value;
+    setFormValues(newFormValues);
+  }
 
+  let addFormFields = () => {
+      setFormValues([...formValues, { item: "", amount: ""}])
+  }
+
+  let removeFormFields = (i) => {
+      let newFormValues = [...formValues];
+      newFormValues.splice(i, 1);
+      setFormValues(newFormValues)
+  }
   
   return (
     <>
@@ -119,46 +153,29 @@ function Main() {
           <Navbar.Brand href="#home" className="text-secondary">Budget Calendar</Navbar.Brand>
         </Container>
       </Navbar>
+      
       <Modal
         show={show}
-        onHide={handleClose}
+        onHide={handleCloseNotSave}
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Monday 01/12/23</Modal.Title>
+          <Modal.Title>
+            Monday 01/12/23
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Table className='date_cell' borderless hover>
-            <tbody>
-              <tr>
-                <td className='date_cells modal_list_title'>Transactions</td>
-                <td className='date_cells modal_list_title'>Amount</td>
-              </tr>
-              <tr>
-                <td className='date_cells'>Iced Coffee</td>
-                <td className='date_cells text-end' style={{color: -5.03 < 0 ? "red" : "black"}}>-5.03</td>
-              </tr>
-              <tr>
-                <td className='date_cells'>Groceries</td>
-                <td className='date_cells text-end' style={{color: -105.06 < 0 ? "red" : "black"}}>-105.06</td>
-              </tr>
-              <tr>
-                <td className='date_cells'>Coco's</td>
-                <td className='date_cells text-end' style={{color: 120.04 < 0 ? "red" : "black"}}>120.04</td>
-              </tr>
-              <tr>
-                <td className='date_cells'>Petrol</td>
-                <td className='date_cells text-end' style={{color: -54.2 < 0 ? "red" : "black"}}>-54.2</td>
-              </tr>
-              <tr>
-                <td className='date_cells date_end_amount'></td>
-                <td className='date_cells date_end_amount text-end' style={{color: -44.25 < 0 ? "red" : "black"}}>-44.25</td>
-              </tr>
-            </tbody>
-          </Table>
+        <Modal.Body className="mx-auto">
+          {formValues.map((element, index) => (
+            <div className="d-flex flex-row" key={index}>
+              <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item || ""} onChange={e => handleChange(index, e)} />
+              <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount || ""} onChange={e => handleChange(index, e)} />
+              <IconButton aria-label="delete" onClick={() => removeFormFields(index)}><DeleteIcon fontSize="inherit" /></IconButton>
+            </div>       
+          ))}       
         </Modal.Body>
         <Modal.Footer>
+          <Button className="col-md-3" onClick={() => addFormFields()}>Add</Button>
           <Button variant="primary" className="col-md-3" onClick={handleClose}>Save</Button>
         </Modal.Footer>
       </Modal>
