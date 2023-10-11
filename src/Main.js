@@ -101,15 +101,13 @@ function Main() {
   }
 
   let handleCloseNotSave = () => {
-    let newFormValues = [...tempFormValues];
-    setFormValues(newFormValues);
-    alert(JSON.stringify(formValues));
+    setFormValues(tempFormValues);
+    alert(JSON.stringify(tempFormValues));
     setShow(false);
   }
   
   const handleShow = () => {
-    let newFormValues = [...formValues];
-    setTempFormValues(newFormValues);
+    setTempFormValues(formValues);
     setShow(true);
   }
 
@@ -131,8 +129,16 @@ function Main() {
   }
 
   let handleChange = (i, e) => {
-    let newFormValues = [...formValues];
-    newFormValues[i][e.target.name] = e.target.value;
+    const newFormValues = formValues.map((currentFormValue, index) => {
+      if (index === i) {
+        return {
+          ...currentFormValue,
+          [e.target.name]: e.target.value,
+        };
+      } else {
+        return currentFormValue;
+      }
+    });
     setFormValues(newFormValues);
   }
 
@@ -168,8 +174,8 @@ function Main() {
         <Modal.Body className="mx-auto">
           {formValues.map((element, index) => (
             <div className="d-flex flex-row" key={index}>
-              <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item || ""} onChange={e => handleChange(index, e)} />
-              <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount || ""} onChange={e => handleChange(index, e)} />
+              <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item} onChange={e => handleChange(index, e)} />
+              <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount} onChange={e => handleChange(index, e)} />
               <IconButton aria-label="delete" onClick={() => removeFormFields(index)}><DeleteIcon fontSize="inherit" /></IconButton>
             </div>       
           ))}       
