@@ -1,13 +1,60 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 class Day extends React.Component{
 
     constructor(props) {
         super(props);
         this.state = {
-            transaction: []
+            formValues: [{ item: "Iced Coffee", amount: "-5"}, { item: "Groceries", amount: "-100"}, { item: "Coco's", amount: "120"}, { item: "Petrol", amount: "-75"}],
+            tempFormValues: [],
+            show: false
+            // transaction: [{ item: "Iced Coffee", amount: "-5"}, { item: "Groceries", amount: "-100"}, { item: "Coco's", amount: "120"}, { item: "Petrol", amount: "-75"}]
         };
+    }
+
+    handleShow = () => {
+        this.setState({ tempFormValues: [...this.state.formValues]});
+        this.setState({show: true});
+    }
+
+    handleClose = () => {
+        this.setState({ formValues: [...this.state.tempFormValues]});
+        alert(JSON.stringify(this.state.tempFormValues));
+        this.setState({show: false});
+    }
+
+    handleCloseNotSave = () => {
+        alert(JSON.stringify(this.state.tempFormValues));
+        this.setState({show: false});
+    }
+
+    addFormFields = () => {
+        this.setState({ tempFormValues: [...this.state.tempFormValues, { item: "", amount: ""}]});
+    }
+
+    removeFormFields = (i) => {
+        let newFormValues = [...this.state.tempFormValues];
+        newFormValues.splice(i, 1);
+        this.setState({ tempFormValues: [...newFormValues]});
+    }
+
+    handleChange = (i, e) => {
+        const newFormValues = this.state.tempFormValues.map((currentFormValue, index) => {
+          if (index === i) {
+            return {
+              ...currentFormValue,
+              [e.target.name]: e.target.value,
+            };
+          } else {
+            return currentFormValue;
+          }
+        });
+        this.setState({ tempFormValues: [...newFormValues]});
     }
 
     parse_transaction_amount = (amount) => {
@@ -28,28 +75,54 @@ class Day extends React.Component{
     }
 
     transaction_amount = (index) => {
-        if (this.props.transactions[index] !== undefined) {
-            if ((this.props.transactions[index].item === "") && (this.props.transactions[index].amount === "")) {
+        if (this.state.formValues[index] !== undefined) {
+            if ((this.state.formValues[index].item === "") && (this.state.formValues[index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
             }  
-            return (this.props.transactions[index].amount);
+            return (this.state.formValues[index].amount);
         }
         return <span style={{color: "white"}}>0</span>;
     }
 
     transaction_item = (index) => {
-        if (this.props.transactions[index] !== undefined) {
-            if ((this.props.transactions[index].item === "") && (this.props.transactions[index].amount === "")) {
+        if (this.state.formValues[index] !== undefined) {
+            if ((this.state.formValues[index].item === "") && (this.state.formValues[index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
             }  
-            return (this.props.transactions[index].item);
+            return (this.state.formValues[index].item);
         }
         return <span style={{color: "white"}}>0</span>;
     }
 
     render() {
         return (
-            <Table className='date_cell' borderless onClick={this.props.handleShow}>
+            <>
+            <Modal
+                show={this.state.show}
+                onHide={this.handleCloseNotSave}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                <Modal.Title>
+                    Monday 01/12/23
+                </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="mx-auto">
+                {this.state.tempFormValues.map((element, index) => (
+                    <div className="d-flex flex-row" key={index}>
+                    <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item} onChange={e => this.handleChange(index, e)} />
+                    <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount} onChange={e => this.handleChange(index, e)} />
+                    <IconButton aria-label="delete" onClick={() => this.removeFormFields(index)}><DeleteIcon fontSize="inherit" /></IconButton>
+                    </div>       
+                ))}       
+                </Modal.Body>
+                <Modal.Footer>
+                <Button className="col-md-3" onClick={() => this.addFormFields()}>Add</Button>
+                <Button variant="primary" className="col-md-3" onClick={this.handleClose}>Save</Button>
+                </Modal.Footer>
+            </Modal>
+            <Table className='date_cell' borderless onClick={this.handleShow}>
                 <tbody>
                 <tr>
                     <td className='date_cells date'>{this.props.date}</td>
@@ -77,6 +150,7 @@ class Day extends React.Component{
                 </tr>
                 </tbody>
             </Table>
+            </>
         );
     }
 }

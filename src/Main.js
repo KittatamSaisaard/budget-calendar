@@ -1,84 +1,16 @@
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Navbar from 'react-bootstrap/Navbar';
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './main.scss';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Day from './Day.js';
 
-// function round2dec(value){
-//   return (Math.round(value * 100) / 100).toFixed(2);
-// }
-
-// function Day({date, handleShow}) {
-
-//   var transaction1 = round2dec(-5.03);
-//   var transaction2 = round2dec(-105.06);
-//   var transaction3 = round2dec(120.04);
-//   var transaction4 = round2dec(-54.20);
-//   var end_amount = round2dec(parseFloat(transaction1) + parseFloat(transaction2) + parseFloat(transaction3) + parseFloat(transaction4));
-
-//   return(
-//     <Table className='date_cell' borderless onClick={handleShow}>
-//       <tbody>
-//         <tr>
-//           <td className='date_cells date'>{date}</td>
-//           <td className='date_cells date_bill text-end'>-</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Iced Coffee</td>
-//           <td className='date_cells text-end' style={{color: transaction1 < 0 ? "red" : "black"}}>{transaction1}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Groceries</td>
-//           <td className='date_cells text-end' style={{color: transaction2 < 0 ? "red" : "black"}}>{transaction2}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Coco's</td>
-//           <td className='date_cells text-end' style={{color: transaction3 < 0 ? "red" : "black"}}>{transaction3}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Petrol</td>
-//           <td className='date_cells text-end' style={{color: transaction4 < 0 ? "red" : "black"}}>{transaction4}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells date_end_amount'></td>
-//           <td className='date_cells date_end_amount text-end' style={{color: end_amount < 0 ? "red" : "black"}}>{end_amount}</td>
-//         </tr>
-//       </tbody>
-//     </Table>
-//   );
-// }
-
+//Might use in the future
 function round2dec(value){
   return (Math.round(value * 100) / 100).toFixed(2);
 }
 
 function Main() {
-  const [formValues, setFormValues] = useState([{ item: "Iced Coffee", amount: "-5"}, { item: "Groceries", amount: "-100"}, { item: "Coco's", amount: "120"}, { item: "Petrol", amount: "-75"}])
-  const [tempFormValues, setTempFormValues] = useState([])
-
-  const [show, setShow] = useState(false);
-
-  let handleClose = () => {
-    setFormValues(tempFormValues);
-    alert(JSON.stringify(tempFormValues));
-    setShow(false);
-  }
-
-  let handleCloseNotSave = () => {
-    alert(JSON.stringify(tempFormValues));
-    setShow(false);
-  }
-  
-  const handleShow = () => {
-    setTempFormValues([...formValues]);
-    setShow(true);
-  }
 
   const dates_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
   let dates = [];
@@ -87,7 +19,7 @@ function Main() {
   let day = 1;
   for (let week= 0; week < 6; week++) {
     for (day; day <= dates_numbers.length; day++) {
-      dates.push(<td key={day}><Day date={dates_numbers[day-1]} handleShow={handleShow} transactions={formValues}></Day></td>);
+      dates.push(<td key={day}><Day date={dates_numbers[day-1]}></Day></td>);
       if (day % 7 === 0) {
         day++;
         break;
@@ -95,30 +27,6 @@ function Main() {
     }
     weeks.push(<tr key={week}>{dates}</tr>);  
     dates = [];
-  }
-
-  let handleChange = (i, e) => {
-    const newFormValues = tempFormValues.map((currentFormValue, index) => {
-      if (index === i) {
-        return {
-          ...currentFormValue,
-          [e.target.name]: e.target.value,
-        };
-      } else {
-        return currentFormValue;
-      }
-    });
-    setTempFormValues(newFormValues);
-  }
-
-  let addFormFields = () => {
-      setTempFormValues([...tempFormValues, { item: "", amount: ""}])
-  }
-
-  let removeFormFields = (i) => {
-      let newFormValues = [...tempFormValues];
-      newFormValues.splice(i, 1);
-      setTempFormValues(newFormValues);
   }
   
   return (
@@ -128,32 +36,7 @@ function Main() {
           <Navbar.Brand href="#home" className="text-secondary">Budget Calendar</Navbar.Brand>
         </Container>
       </Navbar>
-      
-      <Modal
-        show={show}
-        onHide={handleCloseNotSave}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            Monday 01/12/23
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="mx-auto">
-          {tempFormValues.map((element, index) => (
-            <div className="d-flex flex-row" key={index}>
-              <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item} onChange={e => handleChange(index, e)} />
-              <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount} onChange={e => handleChange(index, e)} />
-              <IconButton aria-label="delete" onClick={() => removeFormFields(index)}><DeleteIcon fontSize="inherit" /></IconButton>
-            </div>       
-          ))}       
-        </Modal.Body>
-        <Modal.Footer>
-          <Button className="col-md-3" onClick={() => addFormFields()}>Add</Button>
-          <Button variant="primary" className="col-md-3" onClick={handleClose}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+
       <Container className="p-3">
         <Table>
           <thead>
@@ -169,55 +52,6 @@ function Main() {
           </thead>
           <tbody>
             {weeks}
-            {/* <tr>
-              <td><Day date={1} handleShow={handleShow}></Day></td>
-              <td><Day date={2}></Day></td>
-              <td><Day date={3}></Day></td>
-              <td><Day date={4}></Day></td>
-              <td><Day date={5}></Day></td>
-              <td><Day date={6}></Day></td>
-              <td><Day date={7}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={8}></Day></td>
-              <td><Day date={9}></Day></td>
-              <td><Day date={10}></Day></td>
-              <td><Day date={11}></Day></td>
-              <td><Day date={12}></Day></td>
-              <td><Day date={13}></Day></td>
-              <td><Day date={14}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={15}></Day></td>
-              <td><Day date={16}></Day></td>
-              <td><Day date={17}></Day></td>
-              <td><Day date={18}></Day></td>
-              <td><Day date={19}></Day></td>
-              <td><Day date={20}></Day></td>
-              <td><Day date={21}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={22}></Day></td>
-              <td><Day date={23}></Day></td>
-              <td><Day date={24}></Day></td>
-              <td><Day date={25}></Day></td>
-              <td><Day date={26}></Day></td>
-              <td><Day date={27}></Day></td>
-              <td><Day date={28}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={29}></Day></td>
-              <td><Day date={30}></Day></td>
-              <td><Day date={31}></Day></td>
-              <td><Day date={32}></Day></td>
-              <td><Day date={33}></Day></td>
-              <td><Day date={34}></Day></td>
-              <td><Day date={35}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={36}></Day></td>
-              <td><Day date={37}></Day></td>
-            </tr> */}
           </tbody>
         </Table>
       </Container>
