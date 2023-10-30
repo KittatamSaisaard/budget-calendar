@@ -53,44 +53,8 @@ function Day({date, handleShow}) {
   );
 }
 
-// function Example() {
-//   // const [show, setShow] = useState(false);
-
-//   // const handleClose = () => setShow(false);
-//   // const handleShow = () => setShow(true);
-
-//   return (
-//     <>
-//       {/* <Button variant="primary" onClick={handleShow}>
-//         Launch static backdrop modal
-//       </Button> */}
-
-//       <Modal
-//         show={show}
-//         onHide={handleClose}
-//         backdrop="static"
-//         keyboard={false}
-//       >
-//         <Modal.Header closeButton>
-//           <Modal.Title>Modal title</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           I will not close if you click outside me. Don not even try to press
-//           escape key.
-//         </Modal.Body>
-//         <Modal.Footer>
-//           <Button variant="secondary" onClick={handleClose}>
-//             Close
-//           </Button>
-//           <Button variant="primary">Understood</Button>
-//         </Modal.Footer>
-//       </Modal>
-//     </>
-//   );
-// }
-
 function Main() {
-  const [formValues, setFormValues] = useState([])
+  const [formValues, setFormValues] = useState([{ item: "Iced Coffee", amount: "-5"}, { item: "Groceries", amount: "-100"}, { item: "Coco's", amount: "120"}, { item: "Petrol", amount: "-75"}])
   const [tempFormValues, setTempFormValues] = useState([])
 
   const [show, setShow] = useState(false);
@@ -200,55 +164,6 @@ function Main() {
           </thead>
           <tbody>
             {weeks}
-            {/* <tr>
-              <td><Day date={1} handleShow={handleShow}></Day></td>
-              <td><Day date={2}></Day></td>
-              <td><Day date={3}></Day></td>
-              <td><Day date={4}></Day></td>
-              <td><Day date={5}></Day></td>
-              <td><Day date={6}></Day></td>
-              <td><Day date={7}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={8}></Day></td>
-              <td><Day date={9}></Day></td>
-              <td><Day date={10}></Day></td>
-              <td><Day date={11}></Day></td>
-              <td><Day date={12}></Day></td>
-              <td><Day date={13}></Day></td>
-              <td><Day date={14}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={15}></Day></td>
-              <td><Day date={16}></Day></td>
-              <td><Day date={17}></Day></td>
-              <td><Day date={18}></Day></td>
-              <td><Day date={19}></Day></td>
-              <td><Day date={20}></Day></td>
-              <td><Day date={21}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={22}></Day></td>
-              <td><Day date={23}></Day></td>
-              <td><Day date={24}></Day></td>
-              <td><Day date={25}></Day></td>
-              <td><Day date={26}></Day></td>
-              <td><Day date={27}></Day></td>
-              <td><Day date={28}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={29}></Day></td>
-              <td><Day date={30}></Day></td>
-              <td><Day date={31}></Day></td>
-              <td><Day date={32}></Day></td>
-              <td><Day date={33}></Day></td>
-              <td><Day date={34}></Day></td>
-              <td><Day date={35}></Day></td>
-            </tr>
-            <tr>
-              <td><Day date={36}></Day></td>
-              <td><Day date={37}></Day></td>
-            </tr> */}
           </tbody>
         </Table>
       </Container>
