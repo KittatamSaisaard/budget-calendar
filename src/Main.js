@@ -8,64 +8,61 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import './main.scss';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Day from './Day.js';
 
-function round2dec(value){
-  return (Math.round(value * 100) / 100).toFixed(2);
-}
+// function Day({date, handleShow}) {
 
-function Day({date, handleShow}) {
+//   var transaction1 = round2dec(-5.03);
+//   var transaction2 = round2dec(-105.06);
+//   var transaction3 = round2dec(120.04);
+//   var transaction4 = round2dec(-54.20);
+//   var end_amount = round2dec(parseFloat(transaction1) + parseFloat(transaction2) + parseFloat(transaction3) + parseFloat(transaction4));
 
-  var transaction1 = round2dec(-5.03);
-  var transaction2 = round2dec(-105.06);
-  var transaction3 = round2dec(120.04);
-  var transaction4 = round2dec(-54.20);
-  var end_amount = round2dec(parseFloat(transaction1) + parseFloat(transaction2) + parseFloat(transaction3) + parseFloat(transaction4));
-
-  return(
-    <Table className='date_cell' borderless onClick={handleShow}>
-      <tbody>
-        <tr>
-          <td className='date_cells date'>{date}</td>
-          <td className='date_cells date_bill text-end'>-</td>
-        </tr>
-        <tr>
-          <td className='date_cells'>Iced Coffee</td>
-          <td className='date_cells text-end' style={{color: transaction1 < 0 ? "red" : "black"}}>{transaction1}</td>
-        </tr>
-        <tr>
-          <td className='date_cells'>Groceries</td>
-          <td className='date_cells text-end' style={{color: transaction2 < 0 ? "red" : "black"}}>{transaction2}</td>
-        </tr>
-        <tr>
-          <td className='date_cells'>Coco's</td>
-          <td className='date_cells text-end' style={{color: transaction3 < 0 ? "red" : "black"}}>{transaction3}</td>
-        </tr>
-        <tr>
-          <td className='date_cells'>Petrol</td>
-          <td className='date_cells text-end' style={{color: transaction4 < 0 ? "red" : "black"}}>{transaction4}</td>
-        </tr>
-        <tr>
-          <td className='date_cells date_end_amount'></td>
-          <td className='date_cells date_end_amount text-end' style={{color: end_amount < 0 ? "red" : "black"}}>{end_amount}</td>
-        </tr>
-      </tbody>
-    </Table>
-  );
-}
+//   return(
+//     <Table className='date_cell' borderless onClick={handleShow}>
+//       <tbody>
+//         <tr>
+//           <td className='date_cells date'>{date}</td>
+//           <td className='date_cells date_bill text-end'>-</td>
+//         </tr>
+//         <tr>
+//           <td className='date_cells'>Iced Coffee</td>
+//           <td className='date_cells text-end' style={{color: transaction1 < 0 ? "red" : "black"}}>{transaction1}</td>
+//         </tr>
+//         <tr>
+//           <td className='date_cells'>Groceries</td>
+//           <td className='date_cells text-end' style={{color: transaction2 < 0 ? "red" : "black"}}>{transaction2}</td>
+//         </tr>
+//         <tr>
+//           <td className='date_cells'>Coco's</td>
+//           <td className='date_cells text-end' style={{color: transaction3 < 0 ? "red" : "black"}}>{transaction3}</td>
+//         </tr>
+//         <tr>
+//           <td className='date_cells'>Petrol</td>
+//           <td className='date_cells text-end' style={{color: transaction4 < 0 ? "red" : "black"}}>{transaction4}</td>
+//         </tr>
+//         <tr>
+//           <td className='date_cells date_end_amount'></td>
+//           <td className='date_cells date_end_amount text-end' style={{color: end_amount < 0 ? "red" : "black"}}>{end_amount}</td>
+//         </tr>
+//       </tbody>
+//     </Table>
+//   );
+// }
 
 function Main() {
-  const [formValues, setFormValues] = useState([{ item: "Iced Coffee", amount: "-5"}, { item: "Groceries", amount: "-100"}, { item: "Coco's", amount: "120"}, { item: "Petrol", amount: "-75"}])
+  const [formValues, setFormValues] = useState([{ item: "Tea", amount: "-5"}, { item: "Milk", amount: "-100"}, { item: "Car", amount: "120"}, { item: "Oil", amount: "-5"}])
   const [tempFormValues, setTempFormValues] = useState([])
 
   const [show, setShow] = useState(false);
 
   let handleClose = () => {
-    alert(JSON.stringify(formValues));
+    setFormValues(tempFormValues);
+    alert(JSON.stringify(tempFormValues));
     setShow(false);
   }
 
   let handleCloseNotSave = () => {
-    setFormValues(tempFormValues);
     alert(JSON.stringify(tempFormValues));
     setShow(false);
   }
@@ -82,7 +79,7 @@ function Main() {
   let day = 1;
   for (let week= 0; week < 6; week++) {
     for (day; day <= dates_numbers.length; day++) {
-      dates.push(<td key={day}><Day date={dates_numbers[day-1]} handleShow={handleShow}></Day></td>);
+      dates.push(<td key={day}><div onClick={handleShow}><Day transactions={formValues} date={dates_numbers[day-1]}></Day></div></td>);
       if (day % 7 === 0) {
         day++;
         break;
@@ -93,7 +90,7 @@ function Main() {
   }
 
   let handleChange = (i, e) => {
-    const newFormValues = formValues.map((currentFormValue, index) => {
+    const newFormValues = tempFormValues.map((currentFormValue, index) => {
       if (index === i) {
         return {
           ...currentFormValue,
@@ -103,17 +100,17 @@ function Main() {
         return currentFormValue;
       }
     });
-    setFormValues(newFormValues);
+    setTempFormValues(newFormValues);
   }
 
   let addFormFields = () => {
-      setFormValues([...formValues, { item: "", amount: ""}])
+      setTempFormValues([...tempFormValues, { item: "", amount: ""}])
   }
 
   let removeFormFields = (i) => {
-      let newFormValues = [...formValues];
+      let newFormValues = [...tempFormValues];
       newFormValues.splice(i, 1);
-      setFormValues(newFormValues)
+      setTempFormValues(newFormValues)
   }
   
   return (
@@ -136,7 +133,7 @@ function Main() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="mx-auto">
-          {formValues.map((element, index) => (
+          {tempFormValues.map((element, index) => (
             <div className="d-flex flex-row" key={index}>
               <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item} onChange={e => handleChange(index, e)} />
               <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount} onChange={e => handleChange(index, e)} />
@@ -145,7 +142,7 @@ function Main() {
           ))}       
         </Modal.Body>
         <Modal.Footer>
-          <Button className="col-md-3" onClick={() => addFormFields()}>Add</Button>
+          <Button className="col-md-3" onClick={addFormFields}>Add</Button>
           <Button variant="primary" className="col-md-3" onClick={handleClose}>Save</Button>
         </Modal.Footer>
       </Modal>
