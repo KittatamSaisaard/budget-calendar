@@ -51,8 +51,26 @@ import Day from './Day.js';
 // }
 
 function Main() {
-  const [formValues, setFormValues] = useState([{ item: "Tea", amount: "-5"}, { item: "Milk", amount: "-100"}, { item: "Car", amount: "120"}, { item: "Oil", amount: "-5"}])
+  const [formValues, setFormValues] = useState(
+    {
+        "1012000": [
+        { item: "Tea", amount: "-5"}, 
+        { item: "Milk", amount: "-100"}, 
+        { item: "Car", amount: "120"}, 
+        { item: "Oil", amount: "-5"}
+      ],
+      "2012000": [
+        { item: "asd", amount: "0"}, 
+        { item: "Mk", amount: "104"}, 
+        { item: "we", amount: "1"}, 
+        { item: "sdfds", amount: "-35"}
+      ]
+    }
+    
+  )
   const [tempFormValues, setTempFormValues] = useState([])
+
+  const [clickedDate, setClickedDate] = useState()
 
   const [show, setShow] = useState(false);
 
@@ -67,7 +85,8 @@ function Main() {
     setShow(false);
   }
   
-  const handleShow = () => {
+  const handleShow = (e) => {
+    setClickedDate(e.target.parentElement.parentElement.parentElement.parentElement.id)
     setTempFormValues(formValues);
     setShow(true);
   }
@@ -79,7 +98,7 @@ function Main() {
   let day = 1;
   for (let week= 0; week < 6; week++) {
     for (day; day <= dates_numbers.length; day++) {
-      dates.push(<td key={day}><div onClick={handleShow}><Day transactions={formValues} date={dates_numbers[day-1]}></Day></div></td>);
+      dates.push(<td key={day} onClick={e => handleShow(e)} id={String(dates_numbers[day-1])+"012000"}><Day transactions={formValues} date={dates_numbers[day-1]}></Day></td>);
       if (day % 7 === 0) {
         day++;
         break;
@@ -108,9 +127,13 @@ function Main() {
   }
 
   let removeFormFields = (i) => {
-      let newFormValues = [...tempFormValues];
+      console.log(tempFormValues)
+      let newFormValues = [...tempFormValues[String(clickedDate)]];
+      console.log(newFormValues);
+      // console.log(newFormValues[String(clickedDate)]);
       newFormValues.splice(i, 1);
-      setTempFormValues(newFormValues)
+      setTempFormValues({...tempFormValues, String(clickedDate):newFormValues})
+      console.log(newFormValues)
   }
   
   return (
@@ -133,7 +156,7 @@ function Main() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="mx-auto">
-          {tempFormValues.map((element, index) => (
+          {tempFormValues[String(clickedDate)]?.map((element, index) => (
             <div className="d-flex flex-row" key={index}>
               <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item} onChange={e => handleChange(index, e)} />
               <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount} onChange={e => handleChange(index, e)} />

@@ -34,21 +34,22 @@ class Day extends React.Component{
     }
 
     transaction_amount = (index) => {
-        if (this.state.formValues[index] !== undefined) {
-            if ((this.state.formValues[index].item === "") && (this.state.formValues[index].amount === "")) {
+        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined) {
+            if ((this.state.formValues[String(this.props.date)+"012000"][index].item === "") && (this.state.formValues[String(this.props.date)+"012000"][index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
             }  
-            return (this.parse_transaction_amount(this.state.formValues[index].amount).toFixed(2));
+            return (this.parse_transaction_amount(this.state.formValues[String(this.props.date)+"012000"][index].amount).toFixed(2));
         }
         return <span style={{color: "white"}}>0</span>;
     }
 
     transaction_item = (index) => {
-        if (this.state.formValues[index] !== undefined) {
-            if ((this.state.formValues[index].item === "") && (this.state.formValues[index].amount === "")) {
+        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined) {
+            // console.log(this.state.formValues[String(this.props.date)+"012000"])
+            if ((this.state.formValues[String(this.props.date)+"012000"][index].item === "") && (this.state.formValues[String(this.props.date)+"012000"][index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
-            }  
-            return (this.state.formValues[index].item);
+            }
+            return (this.state.formValues[String(this.props.date)+"012000"][index].item);
         }
         return <span style={{color: "white"}}>0</span>;
     }
