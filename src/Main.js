@@ -53,7 +53,7 @@ import Day from './Day.js';
 function Main() {
   const [formValues, setFormValues] = useState(
     {
-        "1012000": [
+      "1012000": [
         { item: "Tea", amount: "-5"}, 
         { item: "Milk", amount: "-100"}, 
         { item: "Car", amount: "120"}, 
@@ -87,7 +87,9 @@ function Main() {
   
   const handleShow = (e) => {
     setClickedDate(e.target.parentElement.parentElement.parentElement.parentElement.id)
-    setTempFormValues(formValues);
+    console.log(e.target.parentElement.parentElement.parentElement.parentElement.id)
+    setTempFormValues(JSON.parse(JSON.stringify(formValues)));
+    console.log(JSON.parse(JSON.stringify(formValues)))
     setShow(true);
   }
 
@@ -109,7 +111,8 @@ function Main() {
   }
 
   let handleChange = (i, e) => {
-    const newFormValues = tempFormValues.map((currentFormValue, index) => {
+    let newFormValues = JSON.parse(JSON.stringify(tempFormValues));
+    const newMapFormValues = tempFormValues[String(clickedDate)].map((currentFormValue, index) => {
       if (index === i) {
         return {
           ...currentFormValue,
@@ -119,21 +122,27 @@ function Main() {
         return currentFormValue;
       }
     });
+    newFormValues[String(clickedDate)] = newMapFormValues
     setTempFormValues(newFormValues);
   }
 
   let addFormFields = () => {
-      setTempFormValues([...tempFormValues, { item: "", amount: ""}])
+      console.log(formValues[String(clickedDate)])
+      let newFormValues = JSON.parse(JSON.stringify(tempFormValues));
+      if (formValues[String(clickedDate)] === undefined){
+        newFormValues[String(clickedDate)] = []
+        console.log(newFormValues)
+      }
+      let dayTransactions = newFormValues[String(clickedDate)]
+      let addedTransaction = [...dayTransactions, { item: "", amount: ""}]
+      newFormValues[String(clickedDate)] = addedTransaction
+      setTempFormValues(newFormValues)
   }
 
   let removeFormFields = (i) => {
-      console.log(tempFormValues)
-      let newFormValues = [...tempFormValues[String(clickedDate)]];
-      console.log(newFormValues);
-      // console.log(newFormValues[String(clickedDate)]);
-      newFormValues.splice(i, 1);
-      setTempFormValues({...tempFormValues, String(clickedDate):newFormValues})
-      console.log(newFormValues)
+      let newFormValues = JSON.parse(JSON.stringify(tempFormValues));
+      newFormValues[String(clickedDate)].splice(i, 1);
+      setTempFormValues(newFormValues)
   }
   
   return (

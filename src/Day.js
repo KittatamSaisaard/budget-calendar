@@ -34,7 +34,7 @@ class Day extends React.Component{
     }
 
     transaction_amount = (index) => {
-        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined) {
+        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined && this.state.formValues[String(this.props.date)+"012000"][index] !== undefined) {
             if ((this.state.formValues[String(this.props.date)+"012000"][index].item === "") && (this.state.formValues[String(this.props.date)+"012000"][index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
             }  
@@ -44,7 +44,7 @@ class Day extends React.Component{
     }
 
     transaction_item = (index) => {
-        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined) {
+        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined && this.state.formValues[String(this.props.date)+"012000"][index] !== undefined) {
             // console.log(this.state.formValues[String(this.props.date)+"012000"])
             if ((this.state.formValues[String(this.props.date)+"012000"][index].item === "") && (this.state.formValues[String(this.props.date)+"012000"][index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
