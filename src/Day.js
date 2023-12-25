@@ -79,7 +79,7 @@ class Day extends React.Component{
                 </tr>
                 <tr>
                     <td className='date_cells date_end_amount'></td>
-                    <td className='date_cells date_end_amount text-end' style={{color: this.end_amount < 0 ? "red" : "black"}}>{this.end_amount()}</td>
+                    <td className='date_cells date_end_amount text-end' style={{color: this.end_amount() < 0 ? "red" : "black"}}>{this.end_amount()}</td>
                 </tr>
                 </tbody>
             </Table>
