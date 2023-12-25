@@ -53,13 +53,13 @@ import Day from './Day.js';
 function Main() {
   const [formValues, setFormValues] = useState(
     {
-      "1012000": [
+      "2000-01-01": [
         { item: "Tea", amount: "-5"}, 
         { item: "Milk", amount: "-100"}, 
         { item: "Car", amount: "120"}, 
         { item: "Oil", amount: "-5"}
       ],
-      "2012000": [
+      "2000-01-02": [
         { item: "asd", amount: "0"}, 
         { item: "Mk", amount: "104"}, 
         { item: "we", amount: "1"}, 
@@ -87,9 +87,9 @@ function Main() {
   
   const handleShow = (e) => {
     setClickedDate(e.target.parentElement.parentElement.parentElement.parentElement.id)
-    console.log(e.target.parentElement.parentElement.parentElement.parentElement.id)
+    // console.log(e.target.parentElement.parentElement.parentElement.parentElement.id)
     setTempFormValues(JSON.parse(JSON.stringify(formValues)));
-    console.log(JSON.parse(JSON.stringify(formValues)))
+    // console.log(JSON.parse(JSON.stringify(formValues)))
     setShow(true);
   }
 
@@ -100,7 +100,7 @@ function Main() {
   let day = 1;
   for (let week= 0; week < 6; week++) {
     for (day; day <= dates_numbers.length; day++) {
-      dates.push(<td key={day} onClick={e => handleShow(e)} id={String(dates_numbers[day-1])+"012000"}><Day transactions={formValues} date={dates_numbers[day-1]}></Day></td>);
+      dates.push(<td key={day} onClick={e => handleShow(e)} id={"2000-01-"+String(dates_numbers[day-1]).padStart(2, "0")}><Day transactions={formValues} date={"2000-01-"+String(dates_numbers[day-1]).padStart(2, "0")}></Day></td>);
       if (day % 7 === 0) {
         day++;
         break;
@@ -161,7 +161,7 @@ function Main() {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            Monday 01/12/23
+            Monday {String(clickedDate)}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="mx-auto">

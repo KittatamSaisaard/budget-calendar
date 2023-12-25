@@ -34,22 +34,21 @@ class Day extends React.Component{
     }
 
     transaction_amount = (index) => {
-        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined && this.state.formValues[String(this.props.date)+"012000"][index] !== undefined) {
-            if ((this.state.formValues[String(this.props.date)+"012000"][index].item === "") && (this.state.formValues[String(this.props.date)+"012000"][index].amount === "")) {
+        if (this.state.formValues[String(this.props.date)] !== undefined && this.state.formValues[String(this.props.date)][index] !== undefined) {
+            if ((this.state.formValues[String(this.props.date)][index].item === "") && (this.state.formValues[String(this.props.date)][index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
             }  
-            return (this.parse_transaction_amount(this.state.formValues[String(this.props.date)+"012000"][index].amount).toFixed(2));
+            return (this.parse_transaction_amount(this.state.formValues[String(this.props.date)][index].amount).toFixed(2));
         }
         return <span style={{color: "white"}}>0</span>;
     }
 
     transaction_item = (index) => {
-        if (this.state.formValues[String(this.props.date)+"012000"] !== undefined && this.state.formValues[String(this.props.date)+"012000"][index] !== undefined) {
-            // console.log(this.state.formValues[String(this.props.date)+"012000"])
-            if ((this.state.formValues[String(this.props.date)+"012000"][index].item === "") && (this.state.formValues[String(this.props.date)+"012000"][index].amount === "")) {
+        if (this.state.formValues[String(this.props.date)] !== undefined && this.state.formValues[String(this.props.date)][index] !== undefined) {          
+            if ((this.state.formValues[String(this.props.date)][index].item === "") && (this.state.formValues[String(this.props.date)][index].amount === "")) {
                 return <span style={{color: "white"}}>0</span>;
             }
-            return (this.state.formValues[String(this.props.date)+"012000"][index].item);
+            return (this.state.formValues[String(this.props.date)][index].item);
         }
         return <span style={{color: "white"}}>0</span>;
     }
@@ -59,7 +58,7 @@ class Day extends React.Component{
             <Table className='date_cell' borderless>
                 <tbody>
                 <tr>
-                    <td className='date_cells date'>{this.props.date}</td>
+                    <td className='date_cells date'>{this.props.date.slice(-2).replace("0","")}</td>
                     <td className='date_cells date_bill text-end'>-</td>
                 </tr>
                 <tr>
