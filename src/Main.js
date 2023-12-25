@@ -10,86 +10,165 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Day from './Day.js';
 
-// function Day({date, handleShow}) {
-
-//   var transaction1 = round2dec(-5.03);
-//   var transaction2 = round2dec(-105.06);
-//   var transaction3 = round2dec(120.04);
-//   var transaction4 = round2dec(-54.20);
-//   var end_amount = round2dec(parseFloat(transaction1) + parseFloat(transaction2) + parseFloat(transaction3) + parseFloat(transaction4));
-
-//   return(
-//     <Table className='date_cell' borderless onClick={handleShow}>
-//       <tbody>
-//         <tr>
-//           <td className='date_cells date'>{date}</td>
-//           <td className='date_cells date_bill text-end'>-</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Iced Coffee</td>
-//           <td className='date_cells text-end' style={{color: transaction1 < 0 ? "red" : "black"}}>{transaction1}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Groceries</td>
-//           <td className='date_cells text-end' style={{color: transaction2 < 0 ? "red" : "black"}}>{transaction2}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Coco's</td>
-//           <td className='date_cells text-end' style={{color: transaction3 < 0 ? "red" : "black"}}>{transaction3}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells'>Petrol</td>
-//           <td className='date_cells text-end' style={{color: transaction4 < 0 ? "red" : "black"}}>{transaction4}</td>
-//         </tr>
-//         <tr>
-//           <td className='date_cells date_end_amount'></td>
-//           <td className='date_cells date_end_amount text-end' style={{color: end_amount < 0 ? "red" : "black"}}>{end_amount}</td>
-//         </tr>
-//       </tbody>
-//     </Table>
-//   );
-// }
-
 function Main() {
-  const [formValues, setFormValues] = useState(
-    {
-      "1012000": [
-        { item: "Tea", amount: "-5"}, 
-        { item: "Milk", amount: "-100"}, 
-        { item: "Car", amount: "120"}, 
-        { item: "Oil", amount: "-5"}
-      ],
-      "2012000": [
-        { item: "asd", amount: "0"}, 
-        { item: "Mk", amount: "104"}, 
-        { item: "we", amount: "1"}, 
-        { item: "sdfds", amount: "-35"}
-      ]
+
+const [financialData, setFinancialData] = useState({
+  "01-01-2000": {
+    transactions: [
+      { item: "Tea", amount: -5},
+      { item: "Milk", amount: -100},
+      { item: "Car", amount: 120},
+      { item: "Oil", amount: -5}
+    ],
+    availableFunds: 10
+  },
+  "02-01-2000": {
+    transactions: [
+      { item: "asd", amount: 0}, 
+      { item: "Mk", amount: 104}, 
+      { item: "we", amount: 1}, 
+      { item: "sdfds", amount: -35}
+    ],
+    availableFunds: 80
+  }
+});
+
+const updateAvailableFunds = (date) => {
+  setTemporaryData((prevData) => {
+    const updatedData = { ...prevData };
+
+    // Update the data for the current date
+    const currentDateData = updatedData[date] || { transactions: [] };
+    const updatedAvailableFunds = currentDateData.transactions.reduce((total, t) => total + parseFloat(t.amount), 0);
+
+    updatedData[date] = {
+      transactions: currentDateData.transactions,
+      availableFunds: updatedAvailableFunds,
+    };
+
+    // Update the data for all dates past the current date
+    const dateList = Object.keys(updatedData);
+    const currentDateIndex = dateList.indexOf(date);
+
+    console.log(dateList);
+
+    for (let i = currentDateIndex+1; i < dateList.length; i++) {
+      const currentDate = dateList[i];
+      const currentData = updatedData[currentDate];
+      const prevAvailableFunds = i === 0 ? 0 : updatedData[dateList[i - 1]].availableFunds;
+      console.log(updatedData[dateList[i - 1]]);
+      console.log(prevAvailableFunds);
+      const updatedAvailableFunds = prevAvailableFunds + currentData.transactions.reduce((total, t) => total + parseFloat(t.amount), 0);
+
+      updatedData[currentDate] = {
+        transactions: currentData.transactions,
+        availableFunds: updatedAvailableFunds,
+      };
     }
+
+    return updatedData;
+  });
+};
+
+const updateTemporaryData = (date, transaction) => {
+  setTemporaryData((prevData) => {
+    const updatedData = { ...prevData };
     
-  )
-  const [tempFormValues, setTempFormValues] = useState([])
+    const prevDate = getPreviousDate(date);
+    const prevAvailableFunds = updatedData[prevDate]?.availableFunds || 0;
+
+    const existingData = prevData[date] || { transactions: [] };
+    const newTransactions = [...existingData.transactions, transaction];
+    const newAvailableFunds = prevAvailableFunds + newTransactions.reduce((total, transaction) => total + transaction.amount, 0);
+
+    return {
+      ...prevData,
+      [date]: {
+        transactions: newTransactions,
+        availableFunds: newAvailableFunds,
+      },
+    };
+  });
+};
+
+const getPreviousDate = (currentDate) => {
+  const [day, month, year] = currentDate.split('-').map(Number);
+
+  const currentDateObject = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript Date object
+  const previousDateObject = new Date(currentDateObject);
+  previousDateObject.setDate(currentDateObject.getDate() - 1);
+
+  const previousDay = String(previousDateObject.getDate()).padStart(2, '0');
+  const previousMonth = String(previousDateObject.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are 0-indexed
+  const previousYear = previousDateObject.getFullYear();
+
+  return `${previousDay}-${previousMonth}-${previousYear}`;
+};
+
+const updateFinancialData = (date, transaction) => {
+  setFinancialData((prevData) => {
+    const updatedData = { ...prevData };
+
+    const prevDate = getPreviousDate(date);
+    const prevAvailableFunds = updatedData[prevDate]?.availableFunds || 0;
+    console.log(date);
+    console.log(updatedData[prevDate]?.availableFunds);
+
+    const existingData = prevData[date] || { transactions: [] };
+    const newTransactions = transaction ? [...existingData.transactions, transaction] : existingData.transactions;
+    const newAvailableFunds = prevAvailableFunds + newTransactions.reduce((total, transaction) => total + parseFloat(transaction.amount), 0);      
+    return {
+      ...prevData,
+      [date]: {
+        transactions: newTransactions,
+        availableFunds: newAvailableFunds,
+      },
+    };
+  });
+};
+
+const deleteTransaction = (date, index) => {
+  setTemporaryData((prevData) => {
+    const updatedData = { ...prevData };
+    const transactions = [...(updatedData[date]?.transactions || [])];
+
+    // Remove the selected transaction
+    transactions.splice(index, 1);
+
+    // Update the transactions and available funds for the selected date
+    updatedData[date] = {
+      ...updatedData[date],
+      transactions,
+      availableFunds: transactions.reduce((total, transaction) => parseFloat(total + transaction.amount), 0),
+    };
+
+    return updatedData;
+  });
+
+  updateAvailableFunds(String(clickedDate));
+};
+
+  const [temporaryData, setTemporaryData] = useState({});
 
   const [clickedDate, setClickedDate] = useState()
 
   const [show, setShow] = useState(false);
 
-  let handleClose = () => {
-    setFormValues(tempFormValues);
-    alert(JSON.stringify(tempFormValues));
+  const handleSaveData = () => {
+    setFinancialData(temporaryData);
+    setTemporaryData({});
     setShow(false);
-  }
+  };
 
   let handleCloseNotSave = () => {
-    alert(JSON.stringify(tempFormValues));
+    alert(JSON.stringify(temporaryData));
+    console.log(temporaryData);
     setShow(false);
   }
   
   const handleShow = (e) => {
     setClickedDate(e.target.parentElement.parentElement.parentElement.parentElement.id)
-    console.log(e.target.parentElement.parentElement.parentElement.parentElement.id)
-    setTempFormValues(JSON.parse(JSON.stringify(formValues)));
-    console.log(JSON.parse(JSON.stringify(formValues)))
+    setTemporaryData(JSON.parse(JSON.stringify(financialData)));
     setShow(true);
   }
 
@@ -100,7 +179,12 @@ function Main() {
   let day = 1;
   for (let week= 0; week < 6; week++) {
     for (day; day <= dates_numbers.length; day++) {
-      dates.push(<td key={day} onClick={e => handleShow(e)} id={String(dates_numbers[day-1])+"012000"}><Day transactions={formValues} date={dates_numbers[day-1]}></Day></td>);
+      let newfinancialData = JSON.parse(JSON.stringify(temporaryData));
+      if (financialData[String(dates_numbers[day-1]).padStart(2, "0")+"-01-2000"] === undefined){
+        updateFinancialData(String(dates_numbers[day-1]).padStart(2, "0")+"-01-2000", null);
+        newfinancialData[String(dates_numbers[day-1]).padStart(2, "0")+"-01-2000"] = []
+      }
+      dates.push(<td key={day} onClick={e => handleShow(e)} id={String(dates_numbers[day-1]).padStart(2, "0")+"-01-2000"}><Day /*transactions={formValues}*/ date={String(dates_numbers[day-1]).padStart(2, "0")+"-01-2000"} /*day_totals={day_amount_total_list}*/ financialData={financialData[String(dates_numbers[day-1]).padStart(2, "0")+"-01-2000"]} updateData={updateFinancialData}></Day></td>);
       if (day % 7 === 0) {
         day++;
         break;
@@ -111,8 +195,8 @@ function Main() {
   }
 
   let handleChange = (i, e) => {
-    let newFormValues = JSON.parse(JSON.stringify(tempFormValues));
-    const newMapFormValues = tempFormValues[String(clickedDate)].map((currentFormValue, index) => {
+    let newfinancialData = JSON.parse(JSON.stringify(temporaryData));
+    const newMapfinancialData = temporaryData[String(clickedDate)].transactions.map((currentFormValue, index) => {
       if (index === i) {
         return {
           ...currentFormValue,
@@ -122,28 +206,27 @@ function Main() {
         return currentFormValue;
       }
     });
-    newFormValues[String(clickedDate)] = newMapFormValues
-    setTempFormValues(newFormValues);
+    newfinancialData[String(clickedDate)].transactions = newMapfinancialData;
+    const prevDate = getPreviousDate(String(clickedDate));
+    const prevAvailableFunds = newfinancialData[prevDate]?.availableFunds || 0;
+    const newAvailableFunds = prevAvailableFunds + newMapfinancialData.reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
+    newfinancialData[String(clickedDate)].availableFunds = newAvailableFunds;
+    setTemporaryData(newfinancialData);
   }
 
-  let addFormFields = () => {
-      console.log(formValues[String(clickedDate)])
-      let newFormValues = JSON.parse(JSON.stringify(tempFormValues));
-      if (formValues[String(clickedDate)] === undefined){
-        newFormValues[String(clickedDate)] = []
-        console.log(newFormValues)
-      }
-      let dayTransactions = newFormValues[String(clickedDate)]
-      let addedTransaction = [...dayTransactions, { item: "", amount: ""}]
-      newFormValues[String(clickedDate)] = addedTransaction
-      setTempFormValues(newFormValues)
-  }
+  const handleAddData = () => {
+    const newTransaction = { name: "", amount: null };
 
-  let removeFormFields = (i) => {
-      let newFormValues = JSON.parse(JSON.stringify(tempFormValues));
-      newFormValues[String(clickedDate)].splice(i, 1);
-      setTempFormValues(newFormValues)
-  }
+    console.log(financialData);
+    
+    updateTemporaryData(String(clickedDate), newTransaction);
+  };
+
+  const handleDeleteTransaction = (date, index) => {
+    deleteTransaction(date, index);
+  };
+
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   
   return (
     <>
@@ -161,21 +244,21 @@ function Main() {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            Monday 01/12/23
+            Monday {String(clickedDate).replaceAll("-","/")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="mx-auto">
-          {tempFormValues[String(clickedDate)]?.map((element, index) => (
+          {temporaryData[String(clickedDate)]?.transactions.map((element, index) => (
             <div className="d-flex flex-row" key={index}>
               <input class="form-control m-1" type="text" placeholder="Item" name="item" value={element.item} onChange={e => handleChange(index, e)} />
               <input class="form-control m-1" type="text" placeholder="Amount" name="amount" value={element.amount} onChange={e => handleChange(index, e)} />
-              <IconButton aria-label="delete" onClick={() => removeFormFields(index)}><DeleteIcon fontSize="inherit" /></IconButton>
+              <IconButton aria-label="delete" onClick={() => handleDeleteTransaction(String(clickedDate), index)}><DeleteIcon fontSize="inherit" /></IconButton>
             </div>       
           ))}       
         </Modal.Body>
         <Modal.Footer>
-          <Button className="col-md-3" onClick={addFormFields}>Add</Button>
-          <Button variant="primary" className="col-md-3" onClick={handleClose}>Save</Button>
+          <Button className="col-md-3" onClick={handleAddData}>Add</Button>
+          <Button variant="primary" className="col-md-3" onClick={handleSaveData}>Save</Button>
         </Modal.Footer>
       </Modal>
       <Container className="p-3">
