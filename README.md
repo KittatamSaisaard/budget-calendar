@@ -1,8 +1,10 @@
 # Budget Calendar
 
-A calendar to show when bills need to be paid. This new website allows users to create or track their budget by entering income/expenses directly into a monthly calendar. The amounts entered are totaled at the bottom each day.
+## Overview
+The Budget Calendar is a web application designed to display when bills are due. It enables users to create or track their budget by inputting income and expenses directly into a monthly calendar. The entered amounts are automatically totaled at the bottom of each day for easier financial tracking.
 
-I had an idea to create this website based on improvements I had on Vertex42's spreadsheet. The main limitation was not being able to input more than 4 transactions directly on each day. This calendar allows users to enter in as many transactions as they desire on each day.
+## Inspiration
+This project was inspired by improvements identified in Vertex42's Budget Calendar spreadsheet. A notable limitation of the spreadsheet was its restriction on entering more than four transactions per day. The Budget Calendar resolves this issue, allowing users to input an unlimited number of transactions for each day.
 
-This website is inspired by Vertex42's excel spreadsheet:
-https://www.vertex42.com/calendars/budget-calendar.html
+## Acknowledgement
+The website is inspired by Vertex42's Excel spreadsheet, which can be found here: [Vertex42 Budget Calendar](https://www.vertex42.com/calendars/budget-calendar.html).
